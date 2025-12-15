@@ -1,16 +1,17 @@
 PODS:
   - Alamofire (4.9.1)
   - Alertift (4.2.0)
-  - baseapp-ios-core-v1 (0.5.2):
-    - baseapp-ios-core-v1/Default (= 0.5.2)
-  - baseapp-ios-core-v1/ARKit (0.5.2):
+  - baseapp-ios-core-v1 (0.5.3):
+    - baseapp-ios-core-v1/Default (= 0.5.3)
+  - baseapp-ios-core-v1/ARKit (0.5.3):
     - baseapp-ios-core-v1/Default
     - baseapp-ios-core-v1/SceneKit
     - baseapp-ios-core-v1/simd
-  - baseapp-ios-core-v1/Default (0.5.2):
+  - baseapp-ios-core-v1/Default (0.5.3):
     - Alamofire (~> 4.9.1)
     - Alertift (~> 4.2.0)
     - CancelForPromiseKit (~> 1.1.0)
+    - CancelForPromiseKit/Alamofire
     - CoreStore (~> 9.3.0)
     - DeviceKit
     - Kingfisher (~> 7.6.2)
@@ -22,16 +23,20 @@ PODS:
     - SnapKit (~> 5.0.1)
     - SwiftDate (~> 7.0.0)
     - SwiftyBeaver (~> 2.1.1)
-  - baseapp-ios-core-v1/FilePreviewer (0.5.2):
+  - baseapp-ios-core-v1/FilePreviewer (0.5.3):
     - baseapp-ios-core-v1/Default
-  - baseapp-ios-core-v1/SceneKit (0.5.2):
+  - baseapp-ios-core-v1/SceneKit (0.5.3):
     - baseapp-ios-core-v1/Default
     - baseapp-ios-core-v1/simd
-  - baseapp-ios-core-v1/simd (0.5.2):
+  - baseapp-ios-core-v1/simd (0.5.3):
     - baseapp-ios-core-v1/Default
   - CancelForPromiseKit (1.1.0):
     - CancelForPromiseKit/CorePromise (= 1.1.0)
     - CancelForPromiseKit/Foundation (= 1.1.0)
+  - CancelForPromiseKit/Alamofire (1.1.0):
+    - Alamofire (~> 4.0)
+    - CancelForPromiseKit/CorePromise
+    - PromiseKit/Alamofire (~> 6.0)
   - CancelForPromiseKit/CorePromise (1.1.0):
     - PromiseKit/CorePromise (~> 6.0)
   - CancelForPromiseKit/Foundation (1.1.0):
@@ -44,6 +49,9 @@ PODS:
     - PromiseKit/CorePromise (= 6.18.1)
     - PromiseKit/Foundation (= 6.18.1)
     - PromiseKit/UIKit (= 6.18.1)
+  - PromiseKit/Alamofire (6.18.1):
+    - Alamofire (~> 4.0)
+    - PromiseKit/CorePromise
   - PromiseKit/CorePromise (6.18.1)
   - PromiseKit/Foundation (6.18.1):
     - PromiseKit/CorePromise
@@ -101,7 +109,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
   Alertift: 17b37be915cd28edeceabd438e4134d041ea825c
-  baseapp-ios-core-v1: c9d23544e5e15952879cb583c4a2591ce8e5567c
+  baseapp-ios-core-v1: d1cdda71177006b52d0a56452d467d4df1861b10
   CancelForPromiseKit: 753c8798c31519ab324dad33974b7f8e4a92257b
   CoreStore: c3bc082a6e27b99e64c0ee1575f18d69b39a7dc2
   DeviceKit: d83e38ca196a4ebf0cc5f37d6f0316a24b794d5b
@@ -117,6 +125,6 @@ SPEC CHECKSUMS:
   SwiftLint: f84fc7d844e9cde0dc4f5013af608a269e317aba
   SwiftyBeaver: ade157e4f857812e7d7f15f2e3396bb8733f8a1c
 
-PODFILE CHECKSUM: 7cec63c2942d5b1edb8e620a6a92590edfb7769c
+PODFILE CHECKSUM: 203840d46350c4b46b1da0581129bda83fe5d09a
 
 COCOAPODS: 1.14.3

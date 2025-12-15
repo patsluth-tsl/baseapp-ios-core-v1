@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'baseapp-ios-core-v1'
-  s.version          = '0.5.3'
+  s.version          = '0.5.4'
   s.summary          = 'A short description of baseapp-ios-core-v1.'
   s.description      = s.summary
   s.homepage         = 'https://bitbucket.org/silverlogic/baseapp-ios-core-v1'
@@ -36,7 +36,7 @@ Pod::Spec.new do |s|
       ss.ios.dependency 'CancelForPromiseKit', '~> 1.1.0'
 #      ss.ios.dependency 'CancellablePromiseKit'
       ss.ios.dependency 'Alamofire', '~> 4.9.1'
-#      ss.ios.dependency 'CancelForPromiseKit/Alamofire'
+      ss.ios.dependency 'CancelForPromiseKit/Alamofire'
       ss.ios.dependency 'Kingfisher', '~> 7.6.2'
       ss.ios.dependency 'SwiftyBeaver', '~> 2.1.1'
       ss.ios.dependency 'R.swift', '~> 7.8.0'
@@ -49,8 +49,8 @@ Pod::Spec.new do |s|
       ss.watchos.dependency 'RxSwift', '~> 6.9.0'
       ss.watchos.dependency 'RxCocoa', '~> 6.9.0'
       ss.watchos.dependency 'RxSwiftExt', '~> 6.2.1'
-      ss.ios.dependency 'PromiseKit', '~> 6.18.1'
-      ss.ios.dependency 'CancelForPromiseKit', '~> 1.1.0'
+      ss.watchos.dependency 'PromiseKit', '~> 6.18.1'
+      ss.watchos.dependency 'CancelForPromiseKit', '~> 1.1.0'
       ss.watchos.dependency 'SwiftyBeaver', '~> 2.1.1'
       ss.watchos.dependency 'SwiftDate', '~> 7.0.0'
       
