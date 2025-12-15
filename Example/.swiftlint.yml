@@ -39,13 +39,10 @@ disabled_rules:
   - trailing_whitespace
   - valid_ibinspectable
   - vertical_whitespace
-  - inert_defer
-  - redundant_optional_initialization
   - identifier_name
   - shorthand_operator
   - superfluous_disable_command
   - unused_optional_binding
-  - unused_capture_list
   - trailing_closure
   - closure_end_indentation
   - operator_usage_whitespace
@@ -53,6 +50,9 @@ disabled_rules:
   - type_name
   - generic_type_name
   - opening_brace
+  - unneeded_override
+  - function_name_whitespace
+  - implicit_optional_initialization
 
 # Where to report warnings and errors
 reporter: "xcode"
@@ -61,9 +61,7 @@ reporter: "xcode"
 function_parameter_count: 6
 large_tuple: 4
 line_length:
-  warning: 110
-  ignores_comments: true
-mark:
+  warning: 200
   ignores_comments: true
 type_body_length: 100
 private_outlet:

@@ -12,9 +12,6 @@ import PDFKit
 import QuickLook
 import UIKit
 
-// swiftlint push
-// swiftlint:disable line_length
-
 @available(iOS 11.0, *)
 // swiftlint:disable:next type_body_length
 internal class FilePreviewController: UIViewController {
@@ -238,7 +235,6 @@ private extension FilePreviewController {
 //            guard _fileViewController.parent == nil else { return false }
 //            let classStringA = String(describing: _fileViewController.classForCoder)
 //            let classStringB = FileViewController.viewControllerClassStringFor(fileURL: fileURL)
-//            // swiftlint:disable:next line_length
 //            return (classStringA == classStringB)
 //        }) {
 //            fileViewController = fileViewControllers[index]
@@ -338,5 +334,3 @@ extension FilePreviewController: UIPageViewControllerDelegate {
 //        currentPreviewItemIndex = fileViewController.view.tag
     }
 }
-
-// swiftlint pop

@@ -8,7 +8,6 @@
 
 import Foundation
 
-// swiftlint push
 // swiftlint:disable colon
 
 public protocol IntegerType: BinaryInteger {
@@ -98,4 +97,4 @@ public extension IntegerType {
     }
 }
 
-// swiftlint: pop
+// swiftlint:enable colon

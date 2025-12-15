@@ -8,8 +8,6 @@
 
 import Foundation
 
-// swiftlint:disable type_name
-
 
 public protocol RangeClamp {
     associatedtype B: Comparable

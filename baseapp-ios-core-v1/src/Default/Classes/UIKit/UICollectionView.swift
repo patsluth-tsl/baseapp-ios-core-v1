@@ -10,8 +10,6 @@ import Foundation
 
 #if os(iOS)
 
-// swiftlint:disable force_cast
-
 public extension UICollectionView {
     func lastIndexPath(inSection section: Int? = nil) -> IndexPath? {
         let section = section ?? numberOfSections - 1
@@ -98,8 +96,8 @@ public extension UICollectionView {
         reuseIdentifier: String = "\(T.self)",
         _ configure: ((T) -> Void)? = nil
     ) -> T where T: UICollectionViewCell {
-        let cell = dequeueReusableCell(withReuseIdentifier: reuseIdentifier,
-                                       for: indexPath) as! T
+        // swiftlint:disable:next force_cast
+        let cell = dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! T
         configure?(cell)
         return cell
     }
@@ -111,9 +109,12 @@ public extension UICollectionView {
         reuseIdentifier: String = "\(T.self)",
         _ configure: ((T) -> Void)? = nil
     ) -> T where T: UICollectionReusableView {
-        let view = dequeueReusableSupplementaryView(ofKind: kind,
-                                                    withReuseIdentifier: reuseIdentifier,
-                                                    for: indexPath) as! T
+        let view = dequeueReusableSupplementaryView(
+            ofKind: kind,
+            withReuseIdentifier: reuseIdentifier,
+            for: indexPath
+            // swiftlint:disable:next force_cast
+        ) as! T
         configure?(view)
         return view
     }

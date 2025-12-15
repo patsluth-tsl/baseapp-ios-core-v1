@@ -19,8 +19,8 @@ public extension ThumbnailGenerator {
     static let shared = ThumbnailGenerator()
 }
 
-/// Generate `UIImage` thumbnail from `MediaURL`
 // @available(iOS 10.0, *)
+/// Generate `UIImage` thumbnail from `MediaURL`
 public final class ThumbnailGenerator {
     let operationQueue: OperationQueue
     
@@ -133,11 +133,6 @@ public protocol AnyThumbnailGenerator {
 
 extension AnyThumbnailGenerator
 where Self: ThumbnailGeneratorProtocol {
-    
-    /// Generate thumbnail image sync
-    //    func _generate() throws -> KFCrossPlatformImage {
-    //        return try self.generate()
-    //    }
 }
 
 protocol ThumbnailGeneratorProtocol: AnyThumbnailGenerator {

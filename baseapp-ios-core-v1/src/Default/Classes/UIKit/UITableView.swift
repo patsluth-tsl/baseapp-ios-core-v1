@@ -11,8 +11,6 @@ import ObjectiveC
 
 #if os(iOS)
 
-// swiftlint:disable force_cast
-
 public extension UITableView {
     func lastIndexPath(inSection section: Int? = nil) -> IndexPath? {
         let section = section ?? numberOfSections - 1
@@ -85,6 +83,7 @@ public extension UITableView {
         reuseIdentifier: String = "\(T.self)",
         _ configure: ((T) -> Void)? = nil
     ) -> T where T: UITableViewCell {
+        // swiftlint:disable:next force_cast
         let cell = dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! T
         configure?(cell)
         return cell

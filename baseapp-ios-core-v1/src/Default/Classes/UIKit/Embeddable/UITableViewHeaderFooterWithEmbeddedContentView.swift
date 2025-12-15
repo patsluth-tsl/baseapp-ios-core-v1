@@ -11,8 +11,6 @@
 import SnapKit
 import UIKit
 
-// swiftlint:disable line_length
-
 public extension NSObjectProtocol
 	where Self: UIView {
 	typealias TVReusableView = UITableViewHeaderFooterWithEmbeddedContentView<Self>
