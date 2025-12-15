@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'baseapp-ios-core-v1'
-  s.version          = '0.5.2'
+  s.version          = '0.5.3'
   s.summary          = 'A short description of baseapp-ios-core-v1.'
   s.description      = s.summary
   s.homepage         = 'https://bitbucket.org/silverlogic/baseapp-ios-core-v1'
@@ -22,35 +22,36 @@ Pod::Spec.new do |s|
   s.static_framework = true
 
   s.ios.deployment_target = '16.0'
-  s.osx.deployment_target = '10.15'
-  s.watchos.deployment_target = '4.0'
+  s.osx.deployment_target = '13.0'
+  s.watchos.deployment_target = '9.0'
   
   s.default_subspecs = 'Default'
   
   
   s.subspec 'Default' do |ss|
-      ss.ios.dependency 'RxSwift', '~> 6.6.0'
-      ss.ios.dependency 'RxCocoa', '~> 6.6.0'
+      ss.ios.dependency 'RxSwift', '~> 6.9.0'
+      ss.ios.dependency 'RxCocoa', '~> 6.9.0'
       ss.ios.dependency 'RxSwiftExt', '~> 6.2.1'
       ss.ios.dependency 'PromiseKit', '~> 6.18.1'
       ss.ios.dependency 'CancelForPromiseKit', '~> 1.1.0'
+#      ss.ios.dependency 'CancellablePromiseKit'
       ss.ios.dependency 'Alamofire', '~> 4.9.1'
-      ss.ios.dependency 'CancelForPromiseKit/Alamofire'
+#      ss.ios.dependency 'CancelForPromiseKit/Alamofire'
       ss.ios.dependency 'Kingfisher', '~> 7.6.2'
-      ss.ios.dependency 'SwiftyBeaver', '~> 1.9.3'
-      ss.ios.dependency 'R.swift', '~> 7.3.2'
+      ss.ios.dependency 'SwiftyBeaver', '~> 2.1.1'
+      ss.ios.dependency 'R.swift', '~> 7.8.0'
       ss.ios.dependency 'Alertift', '~> 4.2.0'
       ss.ios.dependency 'DeviceKit'
       ss.ios.dependency 'SnapKit', '~> 5.0.1'
       ss.ios.dependency 'SwiftDate', '~> 7.0.0'
-      ss.ios.dependency 'CoreStore', '~> 9.2.0'
+      ss.ios.dependency 'CoreStore', '~> 9.3.0'
       
-      ss.watchos.dependency 'RxSwift', '~> 6.6.0'
-      ss.watchos.dependency 'RxCocoa', '~> 6.6.0'
+      ss.watchos.dependency 'RxSwift', '~> 6.9.0'
+      ss.watchos.dependency 'RxCocoa', '~> 6.9.0'
       ss.watchos.dependency 'RxSwiftExt', '~> 6.2.1'
-      ss.watchos.dependency 'PromiseKit', '~> 6.18.1'
-      ss.watchos.dependency 'CancelForPromiseKit', '~> 1.1.0'
-      ss.watchos.dependency 'SwiftyBeaver', '~> 1.9.3'
+      ss.ios.dependency 'PromiseKit', '~> 6.18.1'
+      ss.ios.dependency 'CancelForPromiseKit', '~> 1.1.0'
+      ss.watchos.dependency 'SwiftyBeaver', '~> 2.1.1'
       ss.watchos.dependency 'SwiftDate', '~> 7.0.0'
       
       ss.ios.frameworks = 'Foundation',
