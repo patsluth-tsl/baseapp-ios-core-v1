@@ -9,7 +9,6 @@
 #if os(iOS)
 
 import Alertift
-import CancelForPromiseKit
 import CoreServices
 import DeviceKit
 import Foundation
@@ -49,7 +48,7 @@ public final class MediaPicker: NSObject {
         }
     }
     
-    private let (promise, resolver) = CancellablePromise<MediaItem>.pending()
+    private let (promise, resolver) = Promise<MediaItem>.pending()
     
     private var viewController: UIViewController? {
         didSet {
@@ -127,7 +126,7 @@ public extension MediaPicker {
         anchorView: UIView? = nil,
         tintColor: UIColor? = nil,
         _ mediaTypes: Set<MediaType>
-    ) -> CancellablePromise<MediaItem> {
+    ) -> Promise<MediaItem> {
         return MediaPicker(
             viewController: viewController,
             anchorView: anchorView,

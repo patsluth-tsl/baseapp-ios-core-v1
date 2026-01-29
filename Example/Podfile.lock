@@ -1,21 +1,19 @@
 PODS:
-  - Alamofire (4.9.1)
+  - Alamofire (5.11.0)
   - Alertift (4.2.0)
-  - baseapp-ios-core-v1 (0.5.4):
-    - baseapp-ios-core-v1/Default (= 0.5.4)
-  - baseapp-ios-core-v1/ARKit (0.5.4):
+  - baseapp-ios-core-v1 (0.5.5):
+    - baseapp-ios-core-v1/Default (= 0.5.5)
+  - baseapp-ios-core-v1/ARKit (0.5.5):
     - baseapp-ios-core-v1/Default
     - baseapp-ios-core-v1/SceneKit
     - baseapp-ios-core-v1/simd
-  - baseapp-ios-core-v1/Default (0.5.4):
-    - Alamofire (~> 4.9.1)
+  - baseapp-ios-core-v1/Default (0.5.5):
+    - Alamofire (~> 5.11.0)
     - Alertift (~> 4.2.0)
-    - CancelForPromiseKit (~> 1.1.0)
-    - CancelForPromiseKit/Alamofire
     - CoreStore (~> 9.3.0)
     - DeviceKit
     - Kingfisher (~> 8.6.2)
-    - PromiseKit (~> 6.18.1)
+    - PromiseKit (~> 8.2.0)
     - R.swift (~> 7.8.0)
     - RxCocoa (~> 6.9.0)
     - RxSwift (~> 6.9.0)
@@ -23,39 +21,24 @@ PODS:
     - SnapKit (~> 5.7.1)
     - SwiftDate (~> 7.0.0)
     - SwiftyBeaver (~> 2.1.1)
-  - baseapp-ios-core-v1/FilePreviewer (0.5.4):
+  - baseapp-ios-core-v1/FilePreviewer (0.5.5):
     - baseapp-ios-core-v1/Default
-  - baseapp-ios-core-v1/SceneKit (0.5.4):
+  - baseapp-ios-core-v1/SceneKit (0.5.5):
     - baseapp-ios-core-v1/Default
     - baseapp-ios-core-v1/simd
-  - baseapp-ios-core-v1/simd (0.5.4):
+  - baseapp-ios-core-v1/simd (0.5.5):
     - baseapp-ios-core-v1/Default
-  - CancelForPromiseKit (1.1.0):
-    - CancelForPromiseKit/CorePromise (= 1.1.0)
-    - CancelForPromiseKit/Foundation (= 1.1.0)
-  - CancelForPromiseKit/Alamofire (1.1.0):
-    - Alamofire (~> 4.0)
-    - CancelForPromiseKit/CorePromise
-    - PromiseKit/Alamofire (~> 6.0)
-  - CancelForPromiseKit/CorePromise (1.1.0):
-    - PromiseKit/CorePromise (~> 6.0)
-  - CancelForPromiseKit/Foundation (1.1.0):
-    - CancelForPromiseKit/CorePromise
-    - PromiseKit/Foundation (~> 6.0)
   - CoreStore (9.3.0)
   - DeviceKit (5.5.0)
   - Kingfisher (8.6.2)
-  - PromiseKit (6.18.1):
-    - PromiseKit/CorePromise (= 6.18.1)
-    - PromiseKit/Foundation (= 6.18.1)
-    - PromiseKit/UIKit (= 6.18.1)
-  - PromiseKit/Alamofire (6.18.1):
-    - Alamofire (~> 4.0)
+  - PromiseKit (8.2.0):
+    - PromiseKit/CorePromise (= 8.2.0)
+    - PromiseKit/Foundation (= 8.2.0)
+    - PromiseKit/UIKit (= 8.2.0)
+  - PromiseKit/CorePromise (8.2.0)
+  - PromiseKit/Foundation (8.2.0):
     - PromiseKit/CorePromise
-  - PromiseKit/CorePromise (6.18.1)
-  - PromiseKit/Foundation (6.18.1):
-    - PromiseKit/CorePromise
-  - PromiseKit/UIKit (6.18.1):
+  - PromiseKit/UIKit (8.2.0):
     - PromiseKit/CorePromise
   - R.swift (7.8.0)
   - RxCocoa (6.9.0):
@@ -87,7 +70,6 @@ SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - Alamofire
     - Alertift
-    - CancelForPromiseKit
     - CoreStore
     - DeviceKit
     - Kingfisher
@@ -107,14 +89,13 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
+  Alamofire: bd5e7b23a1a750975288482c1831d71e74415f86
   Alertift: 17b37be915cd28edeceabd438e4134d041ea825c
-  baseapp-ios-core-v1: 91d0305755a58079ac2e9b1a77b54acc0ab02966
-  CancelForPromiseKit: 753c8798c31519ab324dad33974b7f8e4a92257b
+  baseapp-ios-core-v1: ac9ae124a69b8dec0c13406b19d166e31956482c
   CoreStore: c3bc082a6e27b99e64c0ee1575f18d69b39a7dc2
   DeviceKit: d83e38ca196a4ebf0cc5f37d6f0316a24b794d5b
   Kingfisher: 23d18f54677d973b713e54ce6a8f5eef6e7056ba
-  PromiseKit: 49d70c53d5d20e346beaea4b276b5dd2ab446bb4
+  PromiseKit: 74e6ab5894856b4762fef547055c809bca91d440
   R.swift: f573269ca45b2ab066c082e363dd4c2b297b0d71
   RxCocoa: ac16414696ae706516be3e1ab00fcce5bdc9be8a
   RxRelay: 6b0c930e5cef57d5fe2032571e5e65b78e3cbdb1

@@ -9,7 +9,6 @@
 #if os(iOS)
 
 import AVKit
-import CancelForPromiseKit
 import Foundation
 import Kingfisher
 import PromiseKit
@@ -36,8 +35,8 @@ public final class ThumbnailGenerator {
 public extension ThumbnailGenerator {
     func generate(for url: URL,
                   usingCache: Bool = true,
-                  processor: ImageProcessor? = nil) -> CancellablePromise<KFCrossPlatformImage> {
-        return CancellablePromise<MediaURL>
+                  processor: ImageProcessor? = nil) -> Promise<KFCrossPlatformImage> {
+        return Promise<MediaURL>
             .wrap({
                 return try MediaURL(url: url)
             }).then({
@@ -53,10 +52,10 @@ public extension ThumbnailGenerator {
     /// Supports image, video and pdf urls
     func generate(for mediaURL: MediaURL,
                   usingCache: Bool = true,
-                  processor: ImageProcessor? = nil) -> CancellablePromise<KFCrossPlatformImage> {
+                  processor: ImageProcessor? = nil) -> Promise<KFCrossPlatformImage> {
         let cache = ImageCache.default
         let thumbnailCacheKey = "\(mediaURL.url.fileNameFull)_thumb_\(processor?.identifier ?? "unprocessed")"
-        let (promise, resolver) = CancellablePromise<KFCrossPlatformImage>.pending()
+        let (promise, resolver) = Promise<KFCrossPlatformImage>.pending()
         
         if !usingCache {
             cache.removeImage(forKey: thumbnailCacheKey)
@@ -79,12 +78,8 @@ public extension ThumbnailGenerator {
             }
         })
         
-        promise.appendCancellableTask(task: CancellableFunction({ [weak operation] in
-            operation?.cancel()
-        }), reject: nil)
-        
         cache.retrieveImage(forKey: thumbnailCacheKey, options: nil, completionHandler: {
-            guard promise.isPending && !promise.isCancelled else {
+            guard promise.isPending else {
                 resolver.reject(PMKError.cancelled)
                 return
             }
@@ -96,7 +91,12 @@ public extension ThumbnailGenerator {
             }
         })
         
-        return promise
+        return promise.recover({ [weak operation] error -> Promise<KFCrossPlatformImage> in
+            if error.isCancelled {
+                operation?.cancel()
+            }
+            throw error
+        })
     }
     
     func generateSync(for mediaURL: MediaURL,

@@ -6,7 +6,6 @@
 //  Copyright © 2019 SilverLogic. All rights reserved.
 //
 
-import CancelForPromiseKit
 import Foundation
 import PromiseKit
 
@@ -35,22 +34,5 @@ public extension Guarantee {
         done({
             success($0)
         })
-    }
-}
-
-public extension CancellablePromise {
-    func unwrap(success: @escaping (T) -> Void,
-                failure: @escaping (Error) -> Void) {
-        promise.unwrap(success: success, failure: failure)
-    }
-    
-    func unwrap(result: @escaping (Swift.Result<T, Error>) -> Void) {
-        promise.unwrap(result: result)
-    }
-}
-
-public extension CancellableGuarantee {
-    func unwrap(success: @escaping (T) -> Void) {
-        guarantee.unwrap(success: success)
     }
 }

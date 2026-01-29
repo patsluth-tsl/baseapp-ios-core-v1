@@ -9,8 +9,8 @@
 #if os(iOS)
 
 import Alamofire
-import CancelForPromiseKit
 import Foundation
+import PromiseKit
 
 
 public final class FileDownloader: NSObject {
@@ -24,7 +24,7 @@ public final class FileDownloader: NSObject {
         andSaveIn directoryURL: URL,
         overwriteExisting: Bool = false,
         onProgress: DownloadRequest.ProgressHandler? = nil
-    ) -> CancellablePromise<URL> {
+    ) -> Promise<URL> {
         return download(
             fileAt: url,
             andSaveTo: directoryURL.appendingPathComponent(url.fileNameFull),
@@ -38,11 +38,11 @@ public final class FileDownloader: NSObject {
         andSaveTo fileURL: URL,
         overwriteExisting: Bool = false,
         onProgress: DownloadRequest.ProgressHandler? = nil
-    ) -> CancellablePromise<URL> {
-        return self.download(
-            Alamofire.download(url, to: { _, _ in
+    ) -> Promise<URL> {
+        return download(
+            AF.download(url, to: { _, _ in
                 return (fileURL, [
-                    DownloadRequest.DownloadOptions.createIntermediateDirectories
+                    DownloadRequest.Options.createIntermediateDirectories
                 ])
             }),
             andSaveTo: fileURL,
@@ -59,9 +59,9 @@ public extension FileDownloader {
         andSaveTo fileURL: URL,
         overwriteExisting: Bool = false,
         onProgress: DownloadRequest.ProgressHandler? = nil
-    ) -> CancellablePromise<URL> {
+    ) -> Promise<URL> {
         if !overwriteExisting && (fileURL.isReachableFile && fileURL.fileSize > 0) {
-            return CancellablePromise<URL>.valueCC(fileURL)
+            return Promise<URL>.value(fileURL)
         }
         
         try? FileManager.default.removeItem(at: fileURL)
@@ -71,20 +71,20 @@ public extension FileDownloader {
         })
         
         return downloadRequest
-            .responseDataCC()
+            .responseData()
             .map({ response -> URL in
                 switch response.result {
                 case .success(let data):
-                    guard let destinationURL = response.destinationURL else {
+                    guard let fileURL = response.fileURL else {
                         throw PMKError.cancelled
                     }
-                    try data.write(to: destinationURL)
-                    return destinationURL
+                    try data.write(to: fileURL)
+                    return fileURL
                 case .failure(let error):
                     throw error
                 }
             })
-            .recover(policy: .allErrors, { error -> CancellablePromise<URL> in
+            .recover(policy: .allErrors, { error -> Promise<URL> in
                 logger.error(error)
                 try? FileManager.default.removeItem(at: fileURL)
                 throw error

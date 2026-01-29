@@ -6,8 +6,8 @@
 //  Copyright © 2017 SilverLogic. All rights reserved.
 //
 
-import CancelForPromiseKit
 import Foundation
+import PromiseKit
 
 public extension FileManager {
     func documentsDirectory() throws -> URL {
@@ -17,8 +17,8 @@ public extension FileManager {
         return directoryURL
     }
     
-    func documentsDirectoryPromise() -> CancellablePromise<URL> {
-        return CancellablePromise<URL>.wrap({
+    func documentsDirectoryPromise() -> Promise<URL> {
+        return Promise<URL>.wrap({
             try self.documentsDirectory()
         })
     }
@@ -38,8 +38,8 @@ public extension FileManager {
         return directoryURL
     }
     
-    func documentsChildDirectoryPromise(path components: [String]) -> CancellablePromise<URL> {
-        return CancellablePromise<URL>.wrap({
+    func documentsChildDirectoryPromise(path components: [String]) -> Promise<URL> {
+        return Promise<URL>.wrap({
             try self.documentsChildDirectory(path: components)
         })
     }
@@ -48,7 +48,7 @@ public extension FileManager {
         return try documentsChildDirectory(path: components)
     }
     
-    func documentsChildDirectoryPromise(path components: String...) -> CancellablePromise<URL> {
+    func documentsChildDirectoryPromise(path components: String...) -> Promise<URL> {
         return self.documentsChildDirectoryPromise(path: components)
     }
 }

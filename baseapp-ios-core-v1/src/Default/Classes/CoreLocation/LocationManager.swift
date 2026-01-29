@@ -6,9 +6,9 @@
 //  Copyright © 2018 SilverLogic. All rights reserved.
 //
 
-import CancelForPromiseKit
 import CoreLocation
 import Foundation
+import PromiseKit
 import RxCocoa
 import RxSwift
 import RxSwiftExt
@@ -81,13 +81,13 @@ public final class LocationManager: NSObject {
         }
     }
     
-    public func requestLocation() -> CancellablePromise<CLLocation> {
+    public func requestLocation() -> Promise<CLLocation> {
         defer {
             _currentError.accept(nil)
             coreLocationManager.requestLocation()
         }
         return onCurrentLocation.or(LocationManager.shared.onError)
-            .asCancellablePromise()
+            .asPromise()
             .map({ locationResult -> CLLocation in
                 switch locationResult {
                 case .A(let location):
