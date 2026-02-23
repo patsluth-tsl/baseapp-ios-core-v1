@@ -39,3 +39,7 @@ post_install do |installer|
     end
   end
 end
+
+
+CARVE_API_CLIENT_ID = Lnot8U74n84Vi6908qk84C3r86Gv69Aw95X9B0m0
+CARVE_API_CLIENT_SECRET = Mx0rH447vhuKJgVT2TNo7n188D2nO661thIn0q701kju6a4M11jKVt8D7qk9Fmbrou4sm1

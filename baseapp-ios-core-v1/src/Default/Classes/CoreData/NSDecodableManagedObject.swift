@@ -12,12 +12,16 @@ import Foundation
 
 // swiftlint:disable:next type_name
 public struct NSDecodableManagedObjectIdentityAttribute {
-    let keyPath: String
-    let cVarArg: CVarArg
+    public let keyPath: String
+    public let cVarArg: CVarArg
     
     public init(_ keyPath: String, _ cVarArg: CVarArg) {
         self.keyPath = keyPath
         self.cVarArg = cVarArg
+    }
+    
+    public func identityPredicate() -> NSPredicate {
+        return NSPredicate(format: "\(keyPath) == \(cVarArg)")
     }
 }
 
@@ -74,10 +78,9 @@ where T: NSDecodableManagedObject {
                 fatalError("Decoder userInfo.dataStack is null!")
             }
             let identityAttribute = try T.identityAttribute(from: decoder)
-            let predicate = NSPredicate(format: "\(identityAttribute.keyPath) == \(identityAttribute.cVarArg)")
             let _object = try dataStack.perform(
                 synchronous: { (transaction) in
-                    let _object = try transaction.fetchOne(From<T>(), Where<T>(predicate)) ?? transaction.create(Into<T>())
+                    let _object = try transaction.fetchOne(From<T>(), Where<T>(identityAttribute.identityPredicate())) ?? transaction.create(Into<T>())
                     try _object.update(with: decoder)
                     return _object
                 },
