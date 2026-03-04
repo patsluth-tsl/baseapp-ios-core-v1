@@ -99,18 +99,22 @@ public final class MediaPicker: NSObject {
         }
         
         let alert = (anchorView == nil) ?
-            Alertift.actionSheet(title: nil, message: nil) :
-            Alertift.actionSheet(title: nil, message: nil, anchorView: anchorView!)
-        alert
-            .action(.cancel("Cancel"), handler: { _, _ in
-                self.didSelect(output: nil)
-            })
-            .action(.default("Choose from library"), handler: { _, _ in
+        Alertift.actionSheet(title: nil, message: nil) :
+        Alertift.actionSheet(title: nil, message: nil, anchorView: anchorView!)
+        alert.action(.cancel("Cancel"), handler: { _, _ in
+            self.didSelect(output: nil)
+        })
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            alert.action(.default("Choose from library"), handler: { _, _ in
                 executeAction(.photoLibrary)
             })
-            .action(.default("Take"), handler: { _, _ in
+        }
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            alert.action(.default("Take"), handler: { _, _ in
                 executeAction(.camera)
             })
+        }
+        alert
             .buttonTextColor(tintColor)
             .show(on: viewController, completion: nil)
     }
