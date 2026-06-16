@@ -32,16 +32,16 @@ public final class MediaPicker: NSObject {
         fileprivate var kUTType: String {
             if #available(iOS 15.0, *) {
                 switch self {
-                case .image:    
+                case .image:
                     return UTType.image.identifier
-                case .video:    
+                case .video:
                     return UTType.movie.identifier
                 }
             } else {
                 switch self {
-                case .image:    
+                case .image:
                     return kUTTypeImage as String
-                case .video:    
+                case .video:
                     return kUTTypeMovie as String
                 }
             }
@@ -49,6 +49,9 @@ public final class MediaPicker: NSObject {
     }
     
     private let (promise, resolver) = Promise<MediaItem>.pending()
+    
+    /// When `true`, media captured with the camera is also saved to the device's camera roll.
+    private var saveToCameraRoll: Bool = false
     
     private var viewController: UIViewController? {
         didSet {
@@ -79,9 +82,12 @@ public final class MediaPicker: NSObject {
         viewController: UIViewController,
         anchorView: UIView? = nil,
         tintColor: UIColor? = nil,
+        saveToCameraRoll: Bool = false,
         _ mediaTypes: Set<MediaType>
     ) {
         super.init()
+        
+        self.saveToCameraRoll = saveToCameraRoll
         
         defer {
             self.viewController = viewController
@@ -129,12 +135,14 @@ public extension MediaPicker {
         from viewController: UIViewController,
         anchorView: UIView? = nil,
         tintColor: UIColor? = nil,
+        saveToCameraRoll: Bool = false,
         _ mediaTypes: Set<MediaType>
     ) -> Promise<MediaItem> {
         return MediaPicker(
             viewController: viewController,
             anchorView: anchorView,
             tintColor: tintColor,
+            saveToCameraRoll: saveToCameraRoll,
             mediaTypes
         ).promise
     }
@@ -144,6 +152,27 @@ public extension MediaPicker {
 // MARK: - Private Instance Methods
 @available(iOS 11.0, *)
 private extension MediaPicker {
+    /// Saves a captured media item to the device's camera roll.
+    ///
+    /// Requires `NSPhotoLibraryAddUsageDescription` in the host app's Info.plist.
+    private func persistToCameraRoll(_ item: MediaItem) {
+        switch item.type {
+        case .image:
+            guard let image = UIImage(contentsOfFile: item.fileURL.path) else {
+                logger.error("Failed to load captured image for camera roll: \(item.fileURL)")
+                return
+            }
+            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+        case .video:
+            let path = item.fileURL.path
+            guard UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(path) else {
+                logger.error("Captured video is not compatible with the camera roll: \(path)")
+                return
+            }
+            UISaveVideoAtPathToSavedPhotosAlbum(path, nil, nil, nil)
+        }
+    }
+    
     private func didSelect(output: MediaItem?) {
         if let output = output {
             resolver.fulfill(output)
@@ -162,7 +191,7 @@ extension MediaPicker: UINavigationControllerDelegate & UIImagePickerControllerD
     ) {
         var output: MediaItem?
         
-        if let image = (info[.editedImage] ?? info[.originalImage]) as? UIImage {
+        if let image = (info[.originalImage]) as? UIImage {
             if let data = image.pngData() {
                 let fileURL = FileManager.default.temporaryDirectory
                     .appendingPathComponent("\(image.hash).png")
@@ -177,6 +206,12 @@ extension MediaPicker: UINavigationControllerDelegate & UIImagePickerControllerD
             output = MediaItem(type: .image, fileURL: fileURL)
         } else if let fileURL = info[.mediaURL] as? URL {
             output = MediaItem(type: .video, fileURL: fileURL)
+        }
+        
+        // Only persist to the camera roll for media that was just captured with the
+        // camera — items chosen from the library are already there.
+        if saveToCameraRoll, picker.sourceType == .camera, let output = output {
+            persistToCameraRoll(output)
         }
         
         didSelect(output: output)
