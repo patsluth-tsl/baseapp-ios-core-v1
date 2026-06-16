@@ -159,14 +159,14 @@ private extension MediaPicker {
         switch item.type {
         case .image:
             guard let image = UIImage(contentsOfFile: item.fileURL.path) else {
-                logger.error("Failed to load captured image for camera roll: \(item.fileURL)")
+                logger.log(.error, "Failed to load captured image for camera roll: \(item.fileURL)")
                 return
             }
             UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
         case .video:
             let path = item.fileURL.path
             guard UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(path) else {
-                logger.error("Captured video is not compatible with the camera roll: \(path)")
+                logger.log(.error, "Captured video is not compatible with the camera roll: \(path)")
                 return
             }
             UISaveVideoAtPathToSavedPhotosAlbum(path, nil, nil, nil)
