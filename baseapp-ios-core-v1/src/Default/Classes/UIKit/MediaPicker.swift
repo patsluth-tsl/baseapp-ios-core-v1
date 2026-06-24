@@ -12,6 +12,8 @@ import Alertift
 import CoreServices
 import DeviceKit
 import Foundation
+import Photos
+import PhotosUI
 import PromiseKit
 import UIKit
 import UniformTypeIdentifiers
@@ -58,11 +60,16 @@ public final class MediaPicker: NSObject {
             viewController?.set(associatedObject: "\(type(of: self))", object: self)
             
             if viewController == nil {
-                imagePickerController.dismiss(animated: true, completion: nil)
+                presentedPicker?.dismiss(animated: true, completion: nil)
             }
         }
     }
     
+    /// The picker currently on screen — either the camera (`UIImagePickerController`) or the
+    /// photo library (`PHPickerViewController`). Tracked so it can be dismissed on completion.
+    private weak var presentedPicker: UIViewController?
+    
+    /// Used only for camera capture; `PHPickerViewController` handles the photo library.
     private(set) lazy var imagePickerController = UIImagePickerController.make({
         $0.delegate = self
         $0.allowsEditing = true
@@ -93,14 +100,9 @@ public final class MediaPicker: NSObject {
             self.viewController = viewController
         }
         
-        let executeAction = { (sourceType: UIImagePickerController.SourceType) in
-            self.imagePickerController.sourceType = sourceType
-            self.imagePickerController.mediaTypes = mediaTypes.map({ $0.kUTType })
-            self.imagePickerController.present(from: viewController)
-        }
-        
         guard !Device.current.isSimulator else {
-            executeAction(.photoLibrary)
+            // The simulator has no camera, so go straight to the library picker.
+            self.presentPhotoLibrary(from: viewController, mediaTypes)
             return
         }
         
@@ -110,14 +112,14 @@ public final class MediaPicker: NSObject {
         alert.action(.cancel("Cancel"), handler: { _, _ in
             self.didSelect(output: nil)
         })
-        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-            alert.action(.default("Choose from library"), handler: { _, _ in
-                executeAction(.photoLibrary)
-            })
-        }
+        // PHPickerViewController is always available and runs out-of-process, so it needs
+        // no photo library permission (or source-type availability check).
+        alert.action(.default("Choose from library"), handler: { _, _ in
+            self.presentPhotoLibrary(from: viewController, mediaTypes)
+        })
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
             alert.action(.default("Take"), handler: { _, _ in
-                executeAction(.camera)
+                self.presentCamera(from: viewController, mediaTypes)
             })
         }
         alert
@@ -152,24 +154,95 @@ public extension MediaPicker {
 // MARK: - Private Instance Methods
 @available(iOS 11.0, *)
 private extension MediaPicker {
+    /// Presents the system camera via `UIImagePickerController` — `PHPickerViewController`
+    /// has no camera capture, so the camera path still uses the legacy picker.
+    private func presentCamera(from viewController: UIViewController, _ mediaTypes: Set<MediaType>) {
+        imagePickerController.sourceType = .camera
+        imagePickerController.mediaTypes = mediaTypes.map({ $0.kUTType })
+        presentedPicker = imagePickerController
+        imagePickerController.present(from: viewController)
+    }
+    
+    /// Presents the photo library via `PHPickerViewController`.
+    private func presentPhotoLibrary(from viewController: UIViewController, _ mediaTypes: Set<MediaType>) {
+        var configuration = PHPickerConfiguration()
+        configuration.selectionLimit = 1
+        let filters = mediaTypes.map({ mediaType -> PHPickerFilter in
+            switch mediaType {
+            case .image:
+                return .images
+            case .video:
+                return .videos
+            }
+        })
+        if !filters.isEmpty {
+            configuration.filter = .any(of: filters)
+        }
+        
+        let picker = PHPickerViewController(configuration: configuration)
+        picker.delegate = self
+        presentedPicker = picker
+        viewController.present(picker, animated: true, completion: nil)
+    }
+    
+    /// Copies the picked item out of its (temporary) location and resolves the promise.
+    private func loadMediaItem(from itemProvider: NSItemProvider) {
+        let type: MediaType
+        let typeIdentifier: String
+        if itemProvider.hasItemConformingToTypeIdentifier(MediaType.video.kUTType) {
+            type = .video
+            typeIdentifier = MediaType.video.kUTType
+        } else if itemProvider.hasItemConformingToTypeIdentifier(MediaType.image.kUTType) {
+            type = .image
+            typeIdentifier = MediaType.image.kUTType
+        } else {
+            didSelect(output: nil)
+            return
+        }
+        
+        itemProvider.loadFileRepresentation(forTypeIdentifier: typeIdentifier) { [weak self] url, error in
+            guard let self = self else { return }
+            
+            var output: MediaItem?
+            if let url = url {
+                // `loadFileRepresentation` deletes the supplied URL once this closure returns,
+                // so copy it into our own temporary location to hand back to the caller.
+                let destination = FileManager.default.temporaryDirectory
+                    .appendingPathComponent(UUID().uuidString)
+                    .appendingPathExtension(url.pathExtension)
+                do {
+                    try FileManager.default.copyItem(at: url, to: destination)
+                    output = MediaItem(type: type, fileURL: destination)
+                } catch {
+                    logger.error(error)
+                }
+            } else if let error = error {
+                logger.error(error)
+            }
+            
+            DispatchQueue.main.async {
+                self.didSelect(output: output)
+            }
+        }
+    }
+    
     /// Saves a captured media item to the device's camera roll.
     ///
+    /// Uses `PHAssetChangeRequest` with the original file URL so the asset's metadata
+    /// (EXIF/GPS/orientation) is preserved rather than re-encoded.
     /// Requires `NSPhotoLibraryAddUsageDescription` in the host app's Info.plist.
     private func persistToCameraRoll(_ item: MediaItem) {
-        switch item.type {
-        case .image:
-            guard let image = UIImage(contentsOfFile: item.fileURL.path) else {
-                logger.log(.error, "Failed to load captured image for camera roll: \(item.fileURL)")
-                return
+        PHPhotoLibrary.shared().performChanges {
+            switch item.type {
+            case .image:
+                PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: item.fileURL)
+            case .video:
+                PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: item.fileURL)
             }
-            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-        case .video:
-            let path = item.fileURL.path
-            guard UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(path) else {
-                logger.log(.error, "Captured video is not compatible with the camera roll: \(path)")
-                return
+        } completionHandler: { success, error in
+            if !success {
+                logger.log(.error, "Failed to save \(item.type) to camera roll: \(String(describing: error))")
             }
-            UISaveVideoAtPathToSavedPhotosAlbum(path, nil, nil, nil)
         }
     }
     
@@ -219,6 +292,20 @@ extension MediaPicker: UINavigationControllerDelegate & UIImagePickerControllerD
     
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         didSelect(output: nil)
+    }
+}
+
+@available(iOS 14.0, *)
+extension MediaPicker: PHPickerViewControllerDelegate {
+    public func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        // Dismiss immediately; loading the item below is asynchronous.
+        picker.dismiss(animated: true, completion: nil)
+        
+        if let itemProvider = results.first?.itemProvider {
+            loadMediaItem(from: itemProvider)
+        } else {
+            didSelect(output: nil)
+        }
     }
 }
 
