@@ -265,9 +265,9 @@ extension MediaPicker: UINavigationControllerDelegate & UIImagePickerControllerD
         var output: MediaItem?
         
         if let image = (info[.originalImage]) as? UIImage {
-            if let data = image.pngData() {
+            if let data = image.jpegData(compressionQuality: 0.9) {
                 let fileURL = FileManager.default.temporaryDirectory
-                    .appendingPathComponent("\(image.hash).png")
+                    .appendingPathComponent("\(image.hash).jpg")
                 do {
                     try data.write(to: fileURL)
                     output = MediaItem(type: .image, fileURL: fileURL)
